@@ -1,0 +1,16 @@
+# Supabase
+supabase>=2.0.0
+
+# Interface Gráfica
+streamlit>=1.30.0
+
+# Geração de Relatórios
+python-docx>=1.1.0
+openpyxl>=3.1.0
+
+# Utilities
+python-dateutil>=2.8.0
+python-dotenv>=1.0.0
+
+# Build Executável
+pyinstaller>=6.0.0
