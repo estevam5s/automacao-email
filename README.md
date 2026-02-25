@@ -1,604 +1,315 @@
 # Sistema de Relatório de Salários de Garçons
 
-Aplicação desktop e web para gerenciamento e envio de relatórios de salários de garçons (10% das vendas), com armazenamento em banco de dados Supabase e envio de e-mails automatizados.
+Sistema para gerenciamento de salários de garçons com cálculo automático de 10% das vendas.
 
-## Índice
+## 📋 Índice
 
-1. [Visão Geral](#visão-geral)
-2. [Arquitetura do Projeto](#arquitetura-do-projeto)
-3. [Pré-requisitos](#pré-requisitos)
-4. [Instalação](#instalação)
-5. [Configuração](#configuração)
-6. [Executando a Aplicação](#executando-a-aplicação)
-7. [Estrutura de Arquivos](#estrutura-de-arquivos)
-8. [Uso da Aplicação Desktop (Tkinter)](#uso-da-aplicação-desktop-tkinter)
-   - [Aba Cadastrar](#aba-cadastrar)
-   - [Aba Registrar Dia](#aba-registrar-dia)
-   - [Aba Enviar E-mail](#aba-enviar-e-mail)
-   - [Aba Configurações](#aba-configurações)
-9. [Uso da Aplicação Web (Streamlit)](#uso-da-aplicação-web-streamlit)
-10. [Geração de Relatórios](#geração-de-relatórios)
-11. [Banco de Dados Supabase](#banco-de-dados-supabase)
-12. [Solução de Problemas](#solução-de-problemas)
-13. [Licença](#licença)
+- [Sobre o Projeto](#sobre-o-projeto)
+- [ Tecnologias](#-tecnologias)
+- [Aplicações](#aplicações)
+  - [Desktop (Tkinter)](#desktop-tkinter)
+  - [Web (Streamlit)](#web-streamlit)
+  - [Mobile (React Native/Expo)](#mobile-react-native-expo)
+- [Instalação](#instalação)
+- [Executando as Aplicações](#executando-as-aplicações)
+- [Build Executável Desktop](#build-executável-desktop)
+  - [macOS](#macos)
+  - [Windows](#windows)
+- [Autenticação](#autenticação)
+- [Funcionalidades](#funcionalidades)
+- [Banco de Dados](#banco-de-dados)
+- [Licença](#licença)
 
 ---
 
-## Visão Geral
+## 📝 Sobre o Projeto
 
-Este sistema foi desenvolvido para automatizar o processo de cálculo e envio de relatórios de salários de garçons. O garçom recebe 10% das vendas do dia como comissão, e o sistema facilita o registro diário, cálculo automático e envio de relatório por e-mail.
+O Sistema de Relatório de Salários de Garçons automatiza o cálculo e envio de relatórios de comissões (10% das vendas) para garçons. O sistema conta com três interfaces diferentes:
 
-### Principais Funcionalidades
+- **Desktop**: Aplicação Python com Tkinter
+- **Web**: Aplicação Python com Streamlit  
+- **Mobile**: Aplicação React Native/Expo
 
-- **Cadastro de Funcionários**: Gerencie a lista de garçons
-- **Registro Diário**: Registre vendas, horas trabalhadas, vales e observações
-- **Cálculo Automático**: Cálculo automático de 10% sobre vendas
-- **Relatórios em Múltiplos Formatos**: DOCX, Excel, CSV, JSON, XML, HTML
-- **Envio Automatizado por E-mail**: Relatórios enviados automaticamente para o gerente
-- **Interface Desktop (Tkinter)**: Aplicação desktop completa
-- **Interface Web (Streamlit)**: Alternativa web para acesso remoto
+Todas as aplicações compartilham o mesmo banco de dados Supabase e sistema de autenticação.
 
 ---
 
-## Arquitetura do Projeto
+## 🛠 Tecnologias
 
-```
-automacao/
-├── config/                  # Configurações da aplicação
-│   └── settings.py          # Parâmetros de configuração
-├── data/                    # Camada de dados
-│   ├── models/              # Modelos de dados
-│   │   └── funcionario.py  # Classes de domínio
-│   └── repositories/        # Repositórios de dados
-│       └── supabase_repository.py
-├── services/                # Serviços de negócio
-│   ├── email_service.py     # Envio de e-mails
-│   └── report_generator.py  # Geração de relatórios
-├── ui/                      # Interfaces de usuário
-│   ├── desktop/             # Aplicação Tkinter
-│   │   └── app_tkinter.py
-│   └── web/                 # Aplicação Streamlit
-│       └── app_streamlit.py
-├── sql/                     # Scripts SQL para banco de dados
-├── domain/                  # Camada de domínio (use cases)
-├── doc/                     # Documentação adicional
-├── requirements.txt         # Dependências Python
-└── run_tkinter.sh          # Script de inicialização
-```
-
-### Padrão de Arquitetura
-
-O projeto segue uma arquitetura em camadas:
-
-1. **UI Layer** (`ui/`): Interfacesgráficas (Tkinter, Streamlit)
-2. **Service Layer** (`services/`): Lógicas de negócio
-3. **Data Layer** (`data/`): Modelos e repositórios
-4. **Config Layer** (`config/`): Configurações globais
+| Componente | Tecnologia |
+|------------|------------|
+| Backend | Python 3.10+ |
+| Banco de Dados | Supabase (PostgreSQL) |
+| Autenticação | Supabase Auth |
+| Desktop | Tkinter |
+| Web | Streamlit |
+| Mobile | React Native / Expo |
+| Build Desktop | PyInstaller |
 
 ---
 
-## Pré-requisitos
+## 📱 Aplicações
 
-- **Python 3.10+**
-- **Supabase**: Conta criada e projeto configurado
-- **Gmail**: Conta com senha de app configurada (para envio de e-mails)
-- **Sistema Operacional**: macOS, Linux ou Windows
+### Desktop (Tkinter)
 
----
-
-## Instalação
-
-### 1. Clone o Repositório
+Aplicação desktop com interface gráfica completa:
 
 ```bash
-cd /caminho/para/projeto
-```
-
-### 2. Crie um Ambiente Virtual
-
-```bash
-python -m venv venv
-```
-
-### 3. Ative o Ambiente Virtual
-
-**macOS/Linux:**
-```bash
-source venv/bin/activate
-```
-
-**Windows:**
-```bash
-venv\Scripts\activate
-```
-
-### 4. Instale as Dependências
-
-```bash
+cd ui/desktop
 pip install -r requirements.txt
+python app_tkinter.py
 ```
 
----
+**Funcionalidades:**
+- Cadastro de funcionários
+- Registro diário de vendas
+- Cálculo automático de 10%
+- Envio de e-mail com relatórios
+- Histórico e estatísticas
+- Logs do sistema
+- Configurações
 
-## Configuração
+### Web (Streamlit)
 
-### Configurações do Banco de Dados (Supabase)
-
-As configurações do banco de dados estão em `config/settings.py`:
-
-```python
-SUPABASE_URL: str = "https://seu-projeto.supabase.co"
-SUPABASE_KEY: str = "sua-chave-api"
-```
-
-### Configurações de E-mail
-
-```python
-EMAIL_DEFAULT: str = "seu-email@gmail.com"
-SENHA_APP: str = "sua-senha-de-app"
-SMTP_HOST: str = "smtp.gmail.com"
-SMTP_PORT: int = 587
-```
-
-### Criando uma Senha de App no Gmail
-
-1. Acesse: https://myaccount.google.com/apppasswords
-2. Faça login com sua conta Google
-3. Em "Selecione o app", escolha **E-mail**
-4. Em "Selecione o dispositivo", escolha **Outro** e digite um nome
-5. Clique em **Gerar**
-6. Copie a senha gerada (16 caracteres)
-
-### Configuração do Banco de Dados
-
-Execute os scripts SQL em `sql/scripts.sql` no editor SQL do Supabase para criar as tabelas necessárias:
-
-```sql
--- Tabela principal de funcionários
-CREATE TABLE public.funcionarios (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    nome TEXT NOT NULL,
-    valor_10_percent DECIMAL(10, 2) NOT NULL,
-    hora_entrada TIME NOT NULL,
-    hora_saida TIME NOT NULL,
-    dia_trabalho DATE NOT NULL,
-    observacao TEXT,
-    vale DECIMAL(10, 2),
-    tipo_vale TEXT,
-    pago BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- Tabela de configurações
-CREATE TABLE public.configuracoes (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    email_destinatario TEXT NOT NULL,
-    email_remetente TEXT NOT NULL,
-    senha_app TEXT NOT NULL,
-    smtp_host TEXT DEFAULT 'smtp.gmail.com',
-    smtp_port INTEGER DEFAULT 587
-);
-
--- Tabela de observações gerais
-CREATE TABLE public.observacoes_gerais (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    dia_trabalho DATE NOT NULL UNIQUE,
-    observacao TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-```
-
----
-
-## Executando a Aplicação
-
-### Aplicação Desktop (Tkinter)
+Aplicação web acessível via navegador:
 
 ```bash
-# Usando o script shell
-./run_tkinter.sh
-
-# Ou manualmente
-source venv/bin/activate
-export PYTHONPATH=.
-python ui/desktop/app_tkinter.py
+cd ui/web
+pip install -r requirements.txt
+streamlit run app_streamlit.py
 ```
 
-### Aplicação Web (Streamlit)
+**Acesse:** `http://localhost:8501`
+
+### Mobile (React Native/Expo)
+
+Aplicação mobile para iOS e Android:
 
 ```bash
-source venv/bin/activate
-streamlit run ui/web/app_streamlit.py
+cd ui/mobile
+npm install
+npx expo start
 ```
 
-A aplicação web estará disponível em: http://localhost:8501
+**Funcionalidades:**
+- Autenticação Supabase
+- Cadastro de funcionários
+- Registro diário
+- Envio de e-mail
+- Histórico e estatísticas
+- Interface mobile otimizada
 
 ---
 
-## Estrutura de Arquivos
+## 💻 Instalação
 
-### config/settings.py
+### 1. Clone o repositório
 
-Arquivo principal de configurações da aplicação.
+```bash
+git clone <repositorio>
+cd automacao
+```
 
-| Parâmetro | Descrição |
-|-----------|------------|
-| `SUPABASE_URL` | URL do projeto Supabase |
-| `SUPABASE_KEY` | Chave API do Supabase |
-| `EMAIL_DEFAULT` | E-mail remetente padrão |
-| `SENHA_APP` | Senha de app do Gmail |
-| `SMTP_HOST` | Servidor SMTP |
-| `SMTP_PORT` | Porta SMTP (587 para TLS) |
+### 2. Configure o ambiente
 
-### data/models/funcionario.py
+#### Variáveis de Ambiente (.env)
 
-Modelos de dados da aplicação:
+Crie um arquivo `.env` na raiz do projeto:
 
-- **Funcionario**: Dados de um funcionário
-- **ObservacaoGeral**: Observações gerais do dia
-- **Configuracao**: Configurações de e-mail
+```env
+# Supabase
+SUPABASE_URL=https://seu-projeto.supabase.co
+SUPABASE_KEY=sua-chave-supabase
 
-### data/repositories/supabase_repository.py
+# E-mail (opcional)
+EMAIL_DEFAULT=seu-email@gmail.com
+SENHA_APP=senha-app-gmail
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+```
 
-Repositório para operações com o banco de dados Supabase:
+### 3. Instale as dependências
 
-- `cadastrar_funcionario()`: Cadastra novo funcionário
-- `listar_funcionarios()`: Lista funcionários por data
-- `listar_todos_funcionarios()`: Lista todos os funcionários
-- `atualizar_funcionario()`: Atualiza dados de funcionário
-- `deletar_funcionario()`: Remove funcionário
-- `salvar_configuracao()`: Salva configurações
-- `get_configuracao()`: Recupera configurações
-- `salvar_observacao_geral()`: Salva observação geral
+```bash
+# Python
+pip install -r requirements.txt
 
-### services/email_service.py
-
-Serviço de envio de e-mails:
-
-- `enviar_relatorio()`: Envia relatório com/opcionalmente anexos
-- `enviar_relatorio_com_anexos()`: Envia relatório com todos os formatos
-
-### services/report_generator.py
-
-Gerador de relatórios em múltiplos formatos:
-
-- `generate_docx()`: Gera relatório em Word
-- `generate_excel()`: Gera relatório em Excel
-- `generate_csv()`: Gera relatório em CSV
-- `generate_json()`: Gera relatório em JSON
-- `generate_xml()`: Gera relatório em XML
-- `generate_html()`: Gera relatório em HTML
-- `generate_all()`: Gera todos os formatos
-
-### ui/desktop/app_tkinter.py
-
-Aplicação desktop com interface Tkinter.
-
-### ui/web/app_streamlit.py
-
-Aplicação web com interface Streamlit.
+# Node.js (para mobile)
+cd ui/mobile
+npm install
+```
 
 ---
 
-## Uso da Aplicação Desktop (Tkinter)
+## 🚀 Executando as Aplicações
 
-A aplicação possui 4 abas principais:
+### Aplicação Desktop
 
-### Aba Cadastrar
+```bash
+cd ui/desktop
+python app_tkinter.py
+```
 
-Funcionalidades:
-- **Cadastrar novo funcionário**: Digite o nome e clique em "Cadastrar"
-- **Listar funcionários**: Visualize todos os funcionários cadastrados
-- **Deletar funcionário**: Selecione um funcionário e clique em "Deletar"
+### Aplicação Web
 
-### Aba Registrar Dia
+```bash
+cd ui/web
+streamlit run app_streamlit.py
+```
 
-Funcionalidades:
-- **Selecionar data**: Escolha a data de trabalho no formato YYYY-MM-DD
-- **Carregar dados**: Clique em "Carregar" para ver registros existentes
-- **Registrar funcionário**:
-  - Selecione o funcionário na lista suspensa
-  - Digite o valor de 10% das vendas
-  - Informe hora de entrada (formato HH:MM)
-  - Informe hora de saída (formato HH:MM)
-  - (Opcional) Digite o valor do vale
-  - (Opcional) Selecione o tipo de vale (pix/dinheiro)
-  - (Opcional) Marque "Pago" se já pagou
-  - (Opcional) Adicione uma observação
-- **Salvar registros**: Clique em "Salvar"
+### Aplicação Mobile
 
-### Aba Enviar E-mail
-
-Funcionalidades:
-- **Selecionar data**: Escolha a data do relatório
-- **Carregar dados**: Carregue os registros do dia
-- **Editar observação geral**: Adicione observações gerais do dia
-- **Visualizar registros**: See todos os funcionários e valores
-- **Gerar relatórios**: Selecione o formato desejado e clique em "Gerar"
-- **Enviar e-mail**: Clique em "Enviar E-mail" para enviar ao destinatário
-
-### Aba Configurações
-
-Funcionalidades:
-- **E-mail remetente**: Configure o e-mail que envia
-- **E-mail destinatário**: Configure o e-mail que recebe
-- **Senha**: Configure a senha de app do Gmail
+```bash
+cd ui/mobile
+npx expo start
+```
 
 ---
 
-## Uso da Aplicação Web (Streamlit)
+## 📦 Build Executável Desktop
 
-### Página Inicial
+### macOS
 
-1. **Título e Informações**: Visualize o título do sistema
-2. **Navegação**: Use o menu lateral para navegar entre as seções
+O build já está configurado. Execute:
 
-### Seção Registro
+```bash
+cd ui/desktop
+pyinstaller --clean app.spec
+```
 
-- Selecione a data de trabalho
-- Preencha os dados do funcionário:
-  - Nome
-  - Valor de 10% das vendas
-  - Hora de entrada
-  - Hora de saída
-  - Vale (opcional)
-  - Tipo de vale (opcional)
-  - Pago (checkbox)
-  - Observação (opcional)
-- Clique em "Registrar"
+O executável será criado em:
+```
+ui/desktop/dist/SistemaSalariosGarcons
+```
 
-### Seção Listar
+Para criar um arquivo compactado:
 
-- Selecione a data desejada
-- Visualize a tabela com todos os registros
-- See o total a pagar
+```bash
+cd ui/desktop/dist
+zip -r SistemaSalariosGarcons-Mac.zip SistemaSalariosGarcons
+```
 
-### Seção Relatório
+### Windows
 
-- Selecione a data
-- Escolha o formato do relatório
-- Clique em "Gerar Relatório"
-- Faça o download do arquivo
+Para compilar o executável no Windows:
 
-### Seção Enviar E-mail
+1. **Instale Python 3.10+** no Windows
+2. **Copie a pasta do projeto** para o Windows
+3. **Execute o script de build:**
 
-- Selecione a data
-- Carregue os dados
-- Confirme o e-mail do destinatário
-- Clique em "Enviar E-mail"
+```bash
+cd ui\desktop
+build_windows.bat
+```
+
+Ou manualmente:
+
+```cmd
+pip install -r requirements.txt
+pip install pyinstaller
+
+pyinstaller --onedir --windowed --name SistemaSalariosGarcons ^
+    --add-data "config;config" ^
+    --hidden-import=supabase ^
+    --hidden-import=tkinter ^
+    --hidden-import=pandas ^
+    --hidden-import=openpyxl ^
+    --hidden-import=python_docx ^
+    app_tkinter.py
+```
+
+O executável estará em: `dist\SistemaSalariosGarcons\SistemaSalariosGarcons.exe`
 
 ---
 
-## Geração de Relatórios
+## 🔐 Autenticação
 
-A aplicação gera relatórios nos seguintes formatos:
+O sistema usa **Supabase Auth** para autenticação. As três aplicações (Desktop, Web, Mobile) compartilham o mesmo sistema de login.
 
-| Formato | Extensão | Descrição |
-|---------|----------|------------|
-| Word | .docx | Documento formatado do Microsoft Word |
-| Excel | .xlsx | Planilha do Microsoft Excel |
-| CSV | .csv | Arquivo separado por vírgulas |
-| JSON | .json | Formato JavaScript Object Notation |
-| XML | .xml | Extensible Markup Language |
-| HTML | .html | Página web formatada |
+### Credenciais
 
-### Conteúdo do Relatório
+Use as mesmas credenciais em todas as aplicações:
+- **E-mail**: Seu e-mail cadastrado
+- **Senha**: Sua senha do Supabase Auth
 
-Cada relatório contém:
-- Data de trabalho e dia da semana
+### Criar Novo Usuário
+
+Você pode criar novos usuários através do:
+1. Aplicativo mobile (tela de registro)
+2. Painel do Supabase (Authentication > Users)
+
+---
+
+## ⚙️ Funcionalidades
+
+### Cadastro de Funcionários
+- Adicionar novos funcionários
+- Listar funcionários cadastrados
+- Excluir funcionários
+
+### Registro Diário
+- Data do trabalho
+- Nome do funcionário
+- 10% das vendas (R$)
+- Hora de entrada
+- Hora de saída
+- Vale (PIX/Dinheiro)
+- Status de pagamento
+- Observações
+
+### Relatórios
+- Geração em múltiplos formatos (DOCX, Excel, CSV, JSON, XML, HTML)
+- Envio por e-mail com anexos
+
+### Histórico e Estatísticas
 - Total de funcionários
-- Total a pagar (soma de 10%)
-- Tabela com cada funcionário:
-  - Nome
-  - Valor de 10%
-  - Hora de entrada
-  - Hora de saída
-  - Vale
-  - Tipo de vale
-  - Pago (sim/não)
-  - Observação
+- Total de registros
+- Total de dias trabalhados
+- Total pago / pendente
+- Ranking de pagamentos
+- Histórico de presença
+- Data de cadastramento
+
+### Logs do Sistema
+- Registro de todas as operações
+- Filtragem por ação e tabela
+- Limpeza de logs
+
+### Configurações
+- E-mail remetente
+- E-mail destinatário
+- Senha de app Gmail
 
 ---
 
-## Banco de Dados Supabase
+## 🗄 Banco de Dados
 
 ### Tabelas
 
-#### public.funcionarios
+| Tabela | Descrição |
+|---------|------------|
+| `funcionarios` | Registro de funcionários e dias trabalhados |
+| `configuracoes` | Configurações de e-mail |
+| `observacoes_gerais` | Observações gerais por dia |
+| `logs` | Histórico de ações no sistema |
 
-| Coluna | Tipo | Descrição |
-|--------|------|-----------|
-| id | UUID | Identificador único |
-| nome | TEXT | Nome do funcionário |
-| valor_10_percent | DECIMAL | Valor de 10% das vendas |
-| hora_entrada | TIME | Hora de entrada |
-| hora_saida | TIME | Hora de saída |
-| dia_trabalho | DATE | Data do trabalho |
-| observacao | TEXT | Observação do dia |
-| vale | DECIMAL | Valor do vale |
-| tipo_vale | TEXT | Tipo do vale (pix/dinheiro) |
-| pago | BOOLEAN | Se foi pago |
-| created_at | TIMESTAMP | Data de criação |
-| updated_at | TIMESTAMP | Data de atualização |
+### Configuração Supabase
 
-#### public.configuracoes
-
-| Coluna | Tipo | Descrição |
-|--------|------|-----------|
-| id | UUID | Identificador único |
-| email_destinatario | TEXT | E-mail do destinatário |
-| email_remetente | TEXT | E-mail do remetente |
-| senha_app | TEXT | Senha de app do Gmail |
-| smtp_host | TEXT | Servidor SMTP |
-| smtp_port | INTEGER | Porta SMTP |
-
-#### public.observacoes_gerais
-
-| Coluna | Tipo | Descrição |
-|--------|------|-----------|
-| id | UUID | Identificador único |
-| dia_trabalho | DATE | Data (único) |
-| observacao | TEXT | Observação geral |
-| created_at | TIMESTAMP | Data de criação |
+1. Crie um projeto em [supabase.com](https://supabase.com)
+2. Execute os scripts SQL em `sql/` para criar as tabelas
+3. Configure as variáveis de ambiente com as credenciais
 
 ---
 
-## Solução de Problemas
+## 📄 Licença
 
-### Erro ao Conectar ao Supabase
-
-```
-Erro: conexão falhou
-```
-
-**Solução**:
-1. Verifique se a URL e chave do Supabase estão corretas em `config/settings.py`
-2. Verifique se o projeto Supabase está ativo
-3. Verifique a conexão de internet
-
-### Erro ao Enviar E-mail
-
-```
-Erro ao enviar e-mail: (535, b'5.7.8 Username and Password not accepted')
-```
-
-**Solução**:
-1. A senha de app pode ter expirado - gere uma nova em https://myaccount.google.com/apppasswords
-2. Verifique se o e-mail remetente está correto
-3. Certifique-se de que a senha não contém espaços extras
-
-### Erro ao Salvar Dados
-
-```
-invalid input syntax for type time
-```
-
-**Solução**:
-1. Use o formato HH:MM para hora (ex: 08:00, 16:30)
-2. O sistema agora converte automaticamente se você digitar apenas "8" para "8:00"
-
-### Interface Não Aparece
-
-**Solução**:
-1. Verifique se o Tkinter está instalado: `python -c "import tkinter; print(tkinter.TkVersion)"`
-2. No Windows, talvez seja necessário instalar o Python com suporte a Tkinter
-3. No macOS, use: `brew install python-tk`
-
-###DependênciasFaltantes
-
-```
-ModuleNotFoundError: No module named 'xxx'
-```
-
-**Solução**:
-```bash
-pip install -r requirements.txt
-```
+Desenvolvido por **Estevam Souza**
 
 ---
 
-## Rotas da Aplicação Tkinter
+## ❓ Suporte
 
-### Estrutura de Rotas/Abas
-
-```
-AppTkinter
-├── Tab 1: Cadastrar (👥)
-│   ├── Form: Novo Funcionário
-│   │   ├── entry_nome (Entrada de texto)
-│   │   └── btn_cadastrar (Botão)
-│   └── Table: Funcionários
-│       ├── tree_cadastro (Treeview)
-│       └── btn_deletar (Botão)
-│
-├── Tab 2: Registrar Dia (📝)
-│   ├── Frame: Data do Trabalho
-│   │   ├── entry_dia (Data)
-│   │   └── btn_carregar (Botão)
-│   ├── Frame: Registrar
-│   │   ├── combo_funcionarios (Combobox)
-│   │   ├── entry_10 (10% valor)
-│   │   ├── entry_entrada (Hora)
-│   │   ├── entry_saida (Hora)
-│   │   ├── btn_add (Botão Adicionar)
-│   │   ├── entry_vale (Vale)
-│   │   ├── combo_tipo (Tipo vale)
-│   │   ├── checkbutton_pago (Pago)
-│   │   ├── entry_obs (Observação)
-│   │   ├── btn_salvar (Botão)
-│   │   └── tree_registrar (Tabela)
-│
-├── Tab 3: Enviar E-mail (📧)
-│   ├── Frame: Data
-│   │   ├── entry_dia_envio (Data)
-│   │   └── btn_carregar (Botão)
-│   ├── Frame: Observação Geral
-│   │   └── txt_obs (Texto)
-│   ├── Frame: Funcionários
-│   │   └── tree_envio (Tabela)
-│   ├── Frame: Enviar E-mail
-│   │   ├── entry_email (E-mail)
-│   │   ├── btn_enviar (Botão)
-│   │   └── lbl_total (Label)
-│   └── Frame: Gerar
-│       ├── combo_formato (Formato)
-│       └── btn_gerar (Botão)
-│
-└── Tab 4: Configurações (⚙️)
-    ├── entry_remetente (E-mail)
-    ├── entry_dest (E-mail)
-    ├── entry_senha (Senha)
-    └── btn_salvar (Botão)
-```
-
-### Métodos Principais
-
-| Método | Descrição |
-|--------|-----------|
-| `__init__` | Inicializa a aplicação |
-| `setup_styles` | Configura estilos da interface |
-| `create_widgets` | Cria todos os widgets |
-| `create_tab_cadastro` | Cria aba de cadastro |
-| `create_tab_registrar` | Cria aba de registro |
-| `create_tab_envio` | Cria aba de envio |
-| `create_tab_config` | Cria aba de configurações |
-| `cadastrar_funcionario` | Cadastra novo funcionário |
-| `deletar_funcionario` | Remove funcionário |
-| `carregar_dia` | Carrega registros do dia |
-| `adicionar_registro` | Adiciona registro |
-| `salvar_registros` | Salva registros |
-| `carregar_dia_envio` | Carrega dados para envio |
-| `atualizar_tree_envio` | Atualiza tabela de envio |
-| `salvar_obs_geral` | Salva observação geral |
-| `gerar_relatorio` | Gera relatório |
-| `enviar_email` | Envia e-mail |
-| `salvar_config` | Salva configurações |
-
----
-
-## Contribuição
-
-Para contribuir com o projeto:
-
-1. Fork o repositório
-2. Crie uma branch (`git checkout -b feature/nova-funcionalidade`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
-4. Push para a branch (`git push origin feature/nova-funcionalidade`)
-5. Crie um Pull Request
-
----
-
-## Licença
-
-Este projeto está sob licença MIT. Veja o arquivo LICENSE para mais detalhes.
-
----
-
-## Contato
-
-Para dúvidas ou problemas, entre em contato com o desenvolvedor.
-
----
-
-Desenvolvido com ❤️ usando Python, Tkinter, Streamlit e Supabase
+Para dúvidas ou problemas:
+1. Verifique as configurações do Supabase
+2. Confirme as variáveis de ambiente
+3. Verifique os logs do sistema

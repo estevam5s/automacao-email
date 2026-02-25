@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "Sistema Salarios Garcons",
+    "slug": "sistema-salarios-garcons",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "scheme": "salariosgarcons",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1e1e2f"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.estevamsouza.sistemagarcons"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1e1e2f"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.estevamsouza.sistemagarcons"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-mail-composer",
+      "@react-native-community/datetimepicker",
+      [
+        "expo-router",
+        {
+          "root": "./app"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

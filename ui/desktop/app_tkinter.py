@@ -2024,8 +2024,70 @@ Clique nos botões abaixo para visualizar a documentação.
 
 def main():
     root = tk.Tk()
-    app = AppTkinter(root)
-    root.state('zoomed')
+    
+    login_frame = tk.Frame(root, bg="#1e1e2f")
+    login_frame.pack(fill=tk.BOTH, expand=True)
+    
+    center_frame = tk.Frame(login_frame, bg="#1e1e2f")
+    center_frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+    
+    title = tk.Label(center_frame, text="Sistema de Salários", 
+                     font=('Segoe UI', 28, 'bold'), foreground='#00d4ff', bg="#1e1e2f")
+    title.pack(pady=(0, 10))
+    
+    subtitle = tk.Label(center_frame, text="Faça login para continuar", 
+                      font=('Segoe UI', 14), foreground='#a0a0a0', bg="#1e1e2f")
+    subtitle.pack(pady=(0, 30))
+    
+    tk.Label(center_frame, text="E-mail:", font=('Segoe UI', 12), 
+            foreground='#ffffff', bg="#1e1e2f").pack(anchor=tk.W)
+    entry_email = tk.Entry(center_frame, font=('Segoe UI', 14), width=35,
+                           bg='#323244', fg='#ffffff', insertbackground='#ffffff',
+                           relief=tk.FLAT)
+    entry_email.pack(pady=(0, 15))
+    entry_email.focus()
+    
+    tk.Label(center_frame, text="Senha:", font=('Segoe UI', 12), 
+            foreground='#ffffff', bg="#1e1e2f").pack(anchor=tk.W)
+    entry_senha = tk.Entry(center_frame, font=('Segoe UI', 14), width=35,
+                           bg='#323244', fg='#ffffff', insertbackground='#ffffff',
+                           relief=tk.FLAT, show="*")
+    entry_senha.pack(pady=(0, 20))
+    
+    msg_label = tk.Label(center_frame, text="", font=('Segoe UI', 11), 
+                        fg='#e74c3c', bg="#1e1e2f")
+    msg_label.pack(pady=(0, 10))
+    
+    from services.auth_service import auth_service
+    
+    def attempt_login():
+        email = entry_email.get().strip()
+        password = entry_senha.get()
+        
+        if not email or not password:
+            msg_label.config(text="Preencha todos os campos")
+            return
+        
+        msg_label.config(text="Autenticando...", fg='#00d4ff')
+        root.update()
+        
+        result = auth_service.sign_in(email, password)
+        
+        if result.get("success"):
+            login_frame.destroy()
+            app = AppTkinter(root)
+            root.state('zoomed')
+            root.mainloop()
+        else:
+            msg_label.config(text=result.get("error", "Erro ao fazer login"), fg='#e74c3c')
+            entry_senha.delete(0, tk.END)
+    
+    btn_login = tk.Button(center_frame, text="Entrar", command=attempt_login,
+                         font=('Segoe UI', 14, 'bold'), bg='#00d4ff', fg='#1e1e2f',
+                         relief=tk.FLAT, padx=40, pady=12, cursor="hand2")
+    btn_login.pack(pady=(10, 0))
+    
+    root.geometry("600x500")
     root.mainloop()
 
 

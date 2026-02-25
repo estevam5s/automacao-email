@@ -10,6 +10,7 @@ from data.models.funcionario import Funcionario, Configuracao, ObservacaoGeral
 from data.repositories.supabase_repository import SupabaseRepository
 from services.report_generator import ReportGenerator
 from services.email_service import EmailService
+from services.auth_service import auth_service
 from config.settings import settings
 
 st.set_page_config(
@@ -18,6 +19,50 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+if 'authenticated' not in st.session_state:
+    st.session_state.authenticated = False
+    st.session_state.user = None
+
+if not st.session_state.authenticated:
+    st.markdown("""
+    <style>
+        .login-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 40px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .stApp { background: linear-gradient(135deg, #1e1e2f 0%, #2d2d44 100%); }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([1,2,1])
+    with col2:
+        st.markdown("### 🔐 Sistema de Salários")
+        st.markdown("Faça login para continuar")
+        
+        email = st.text_input("E-mail", key="login_email")
+        password = st.text_input("Senha", type="password", key="login_password")
+        
+        if st.button("Entrar", type="primary", use_container_width=True):
+            if not email or not password:
+                st.error("Preencha todos os campos")
+            else:
+                result = auth_service.sign_in(email, password)
+                if result.get("success"):
+                    st.session_state.authenticated = True
+                    st.session_state.user = result.get("user")
+                    st.rerun()
+                else:
+                    st.error(result.get("error", "Erro ao fazer login"))
+        
+        st.markdown("---")
+        st.caption("Use as mesmas credenciais do app mobile")
+    
+    st.stop()
 
 st.markdown("""
 <style>
@@ -36,6 +81,17 @@ st.markdown("""
     .step-box { background: #2d2d44; padding: 15px; border-radius: 10px; margin: 10px 0; border-left: 4px solid #00d4ff; }
 </style>
 """, unsafe_allow_html=True)
+
+with st.sidebar:
+    st.markdown("### 👤 Usuário")
+    user_email = st.session_state.user.email if st.session_state.user else "Usuário"
+    st.markdown(f"**{user_email}**")
+    if st.button("Sair", use_container_width=True):
+        auth_service.sign_out()
+        st.session_state.authenticated = False
+        st.session_state.user = None
+        st.rerun()
+    st.markdown("---")
 
 if 'repository' not in st.session_state:
     st.session_state.repository = SupabaseRepository()
@@ -74,7 +130,8 @@ def main():
         with col_s1:
             st.metric("📅", date.today().strftime('%d/%m'))
         with col_s2:
-            st.metric("📆", settings.DIAS_SEMANA.get(date.today().weekday())[:3])
+            dia_semana = settings.DIAS_SEMANA.get(date.today().weekday(), "")
+            st.metric("📆", dia_semana[:3] if dia_semana else "")
         st.markdown("---")
         st.caption("Desenvolvido por: Estevam Souza")
     
