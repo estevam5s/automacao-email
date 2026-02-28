@@ -1,113 +1,73 @@
 @echo off
-REM =============================================================================
-REM Script para gerar executável Windows
-REM =============================================================================
-REM Execute este script na pasta ui\desktop
-REM =============================================================================
+chcp 65001 > nul
 
-echo.
 echo ==========================================
 echo   Build Sistema Salarios - Windows
 echo ==========================================
 echo.
 
-REM Verifica se está no diretório correto
+REM Verifica se está na pasta correta
 if not exist "app_tkinter.py" (
-    echo [ERRO] Execute este script na pasta ui\desktop
+    echo [ERRO] Execute este script dentro da pasta ui\desktop
     pause
     exit /b 1
 )
 
-REM Instala PyInstaller se não estiver instalado
-echo [1/4] Verificando dependencias...
-pip show pyinstaller >nul 2>&1
-if errorlevel 1 (
-    echo        Instalando PyInstaller...
-    pip install pyinstaller
+if not exist "app_windows.spec" (
+    echo [ERRO] Arquivo app_windows.spec nao encontrado!
+    pause
+    exit /b 1
 )
 
-REM Limpa builds anteriores
+REM Localiza o pyinstaller (venv local tem prioridade)
+set PYINSTALLER=
+if exist "..\..\venv\Scripts\pyinstaller.exe" (
+    set PYINSTALLER=..\..\venv\Scripts\pyinstaller.exe
+) else if exist "%APPDATA%\Python\Python311\Scripts\pyinstaller.exe" (
+    set PYINSTALLER=%APPDATA%\Python\Python311\Scripts\pyinstaller.exe
+) else (
+    where pyinstaller >nul 2>&1
+    if %errorlevel% == 0 (
+        set PYINSTALLER=pyinstaller
+    ) else (
+        echo [ERRO] pyinstaller nao encontrado.
+        echo        Instale com: pip install pyinstaller
+        pause
+        exit /b 1
+    )
+)
+echo [OK] PyInstaller: %PYINSTALLER%
+
+REM Garante que appdirs esta instalado (necessario para pkg_resources)
+echo [1/4] Verificando dependencias...
+if exist "..\..\venv\Scripts\pip.exe" (
+    ..\..\venv\Scripts\pip.exe install appdirs --quiet
+) else (
+    pip install appdirs --quiet
+)
+
 echo [2/4] Limpando builds anteriores...
 if exist "build" rmdir /s /q "build"
-if exist "dist" rmdir /s /q "dist"
-if exist "*.spec" del /q "*.spec"
+if exist "dist"  rmdir /s /q "dist"
 
-REM Cria arquivo spec
-echo [3/4] Criando arquivo de configuracao...
-
-(
-echo # -*- mode: python ; coding: utf-8 -*-
-echo block_cipher = None
-echo.
-echo a = Analysis(
-echo     ['app_tkinter.py'],
-echo     pathex=[],
-echo     binaries=[],
-echo     datas=[],
-echo     hiddenimports=[
-echo         'supabase',
-echo         'tkinter',
-echo         'pandas',
-echo         'openpyxl',
-echo         'python_docx',
-echo         'jinja2',
-echo         'email.mime',
-echo         'smtplib',
-echo     ],
-echo     hookspath=[],
-echo     hooksconfig^={},
-echo     runtime_hooks=[],
-echo     excludes=[],
-echo     win_no_prefer_redirects=False,
-echo     win_private_assemblies=False,
-echo     cipher=block_cipher,
-echo     noarchive=False,
-echo )
-echo.
-echo pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
-echo.
-echo exe = EXE(
-echo     pyz,
-echo     a.scripts,
-echo     a.binaries,
-echo     a.zipfiles,
-echo     a.datas,
-echo     [],
-echo     name='SistemaSalariosGarcons',
-echo     debug=False,
-echo     bootloader_ignore_signals=False,
-echo     strip=False,
-echo     upx=True,
-echo     console=False,
-echo     disable_windowed_traceback=False,
-echo     argv_emulation=False,
-echo     target_arch=None,
-echo     codesign_identity=None,
-echo     entitlements_file=None,
-echo     icon=None,
-echo )
-) > app_windows.spec
-
-REM Executa PyInstaller
-echo [4/4] Compilando executavel...
-echo        Isto pode levar alguns minutos...
+echo [3/4] Compilando executavel...
+echo       Isto pode levar alguns minutos...
 echo.
 
-pyinstaller --clean app_windows.spec
+"%PYINSTALLER%" --clean app_windows.spec
 
-REM Verifica se o build foi bem sucedido
+echo.
 if exist "dist\SistemaSalariosGarcons.exe" (
+    echo [4/4] Verificando tamanho do executavel...
+    for %%A in ("dist\SistemaSalariosGarcons.exe") do echo        Tamanho: %%~zA bytes
     echo.
-    echo [SUCESSO] Build concluido!
-    echo.
-    echo Executavel: dist\SistemaSalariosGarcons.exe
-    echo.
-    echo Para distribuir, compacte a pasta dist:
-    echo   cd dist
-    echo   powershell Compress-Archive -Path SistemaSalariosGarcons -DestinationPath SistemaSalariosGarcons-Windows.zip
+    echo ==========================================
+    echo   [SUCESSO] Build concluido!
+    echo   Executavel: dist\SistemaSalariosGarcons.exe
+    echo ==========================================
 ) else (
-    echo.
-    echo [ERRO] Build falhou. Verifique os erros acima.
+    echo [ERRO] Build falhou - executavel nao gerado.
+    echo        Verifique os erros acima.
     pause
     exit /b 1
 )

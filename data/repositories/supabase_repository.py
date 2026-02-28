@@ -57,6 +57,35 @@ class SupabaseRepository:
             return Funcionario.from_dict(data.data[0])
         return None
 
+    # ===== FUNCIONÁRIOS BASE (lista fixa de funcionários) =====
+    def listar_funcionarios_base(self) -> List[FuncionarioBase]:
+        data = self.client.table("funcionarios_base").select("*").order("nome").execute()
+        return [FuncionarioBase.from_dict(item) for item in data.data]
+
+    def cadastrar_funcionario_base(self, func: FuncionarioBase) -> FuncionarioBase:
+        if not func.id:
+            func.id = uuid.uuid4()
+        data = self.client.table("funcionarios_base").insert(func.to_dict()).execute()
+        if data.data:
+            return FuncionarioBase.from_dict(data.data[0])
+        raise Exception("Erro ao cadastrar funcionário base")
+
+    def atualizar_funcionario_base(self, func: FuncionarioBase) -> FuncionarioBase:
+        data = self.client.table("funcionarios_base").update(func.to_dict()).eq("id", str(func.id)).execute()
+        if data.data:
+            return FuncionarioBase.from_dict(data.data[0])
+        raise Exception("Erro ao atualizar funcionário base")
+
+    def deletar_funcionario_base(self, func_id: str) -> bool:
+        self.client.table("funcionarios_base").delete().eq("id", func_id).execute()
+        return True
+
+    def buscar_funcionario_base_por_nome(self, nome: str) -> Optional[FuncionarioBase]:
+        data = self.client.table("funcionarios_base").select("*").eq("nome", nome).execute()
+        if data.data:
+            return FuncionarioBase.from_dict(data.data[0])
+        return None
+
     # ===== CONFIGURAÇÕES =====
     def get_configuracao(self) -> Optional[Configuracao]:
         data = self.client.table("configuracoes").select("*").limit(1).execute()

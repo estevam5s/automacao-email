@@ -1650,8 +1650,8 @@ Clique nos botões abaixo para visualizar a documentação.
 
     def carregar_dados(self):
         try:
-            todos = self.repository.listar_todos_funcionarios()
-            nomes = list(set(f.nome for f in todos if f.nome))
+            base_funcs = self.repository.listar_funcionarios_base()
+            nomes = [f.nome for f in base_funcs if f.nome]
             self.combo_funcionarios['values'] = nomes
             self.atualizar_tree_cadastro()
             
@@ -1682,11 +1682,11 @@ Clique nos botões abaixo para visualizar a documentação.
     def atualizar_tree_cadastro(self):
         for item in self.tree_cadastro.get_children():
             self.tree_cadastro.delete(item)
-        for func in self.repository.listar_todos_funcionarios():
+        for func in self.repository.listar_funcionarios_base():
             self.tree_cadastro.insert('', tk.END, values=(
                 func.nome,
-                func.dia_trabalho.strftime('%d/%m/%Y') if func.dia_trabalho else '-',
-                'Ativo' if func.nome else '-'
+                func.created_at[:10] if func.created_at else '-',
+                'Ativo'
             ))
 
     def carregar_dia(self):
@@ -1917,9 +1917,16 @@ Clique nos botões abaixo para visualizar a documentação.
         if not nome:
             messagebox.showwarning("Aviso", "Digite o nome do funcionário")
             return
+        
+        existente = self.repository.buscar_funcionario_base_por_nome(nome)
+        if existente:
+            messagebox.showwarning("Aviso", f"O funcionário '{nome}' já está cadastrado!")
+            return
+        
         try:
-            func = Funcionario(nome=nome, dia_trabalho=date.today())
-            self.repository.cadastrar_funcionario(func)
+            from data.models.funcionario import FuncionarioBase
+            func = FuncionarioBase(nome=nome)
+            self.repository.cadastrar_funcionario_base(func)
             self.entry_nome.delete(0, tk.END)
             self.carregar_dados()
             messagebox.showinfo("Sucesso", "Funcionário cadastrado!")
@@ -1933,21 +1940,21 @@ Clique nos botões abaixo para visualizar a documentação.
             return
         nome = self.tree_cadastro.item(sel[0])['values'][0]
         if messagebox.askyesno("Confirmar", f"Deseja deletar {nome}?"):
-            for f in self.repository.listar_todos_funcionarios():
+            for f in self.repository.listar_funcionarios_base():
                 if f.nome == nome:
-                    self.repository.deletar_funcionario(str(f.id))
+                    self.repository.deletar_funcionario_base(str(f.id))
                     break
             self.carregar_dados()
             messagebox.showinfo("Sucesso", "Funcionário deletado!")
 
     def deletar_todos_funcionarios(self):
-        if not messagebox.askyesno("Confirmar", "Deseja deletar TODOS os funcionários? Esta ação não pode ser desfeita!"):
+        if not messagebox.askyesno("Confirmar", "Deseja deletar TODOS os funcionários da base? Esta ação não pode ser desfeita!"):
             return
         
         try:
-            todos = self.repository.listar_todos_funcionarios()
+            todos = self.repository.listar_funcionarios_base()
             for f in todos:
-                self.repository.deletar_funcionario(str(f.id))
+                self.repository.deletar_funcionario_base(str(f.id))
             self.carregar_dados()
             messagebox.showinfo("Sucesso", "Todos os funcionários foram deletados!")
         except Exception as e:

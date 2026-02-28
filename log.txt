@@ -1,0 +1,93 @@
+==========================================
+  Build Sistema Salarios - Windows
+==========================================
+
+[1/4] Verificando dependencias...
+[2/4] Limpando builds anteriores...
+[3/4] Criando arquivo de configuracao...
+# -*- mode: python ; coding: utf-8 -*-
+block_cipher = None
+
+a = Analysis(
+    ['app_tkinter.py'],
+    pathex=[],
+    binaries=[],
+    datas=[],
+    hiddenimports=[
+        'supabase',
+        'tkinter',
+        'tkinter.ttk',
+        'tkinter.filedialog',
+        'tkinter.messagebox',
+        'pandas',
+        'openpyxl',
+        'docx',
+        'jinja2',
+        'email.mime',
+        'email.mime.text',
+        'email.mime.multipart',
+        'email.mime.image',
+        'smtplib',
+        'ssl',
+        'datetime',
+        'uuid',
+    ],
+    hookspath=[],
+    hooksconfig={},
+    runtime_hooks=[],
+    excludes=[
+        'torch',
+        'tensorflow',
+        'scipy',
+        'matplotlib',
+        'IPython',
+        'transformers',
+        'cv2',
+        'PIL',
+        'sklearn',
+        'seaborn',
+        'plotly',
+        'streamlit',
+        'altair',
+        'pydeck',
+    ],
+    win_no_prefer_redirects=False,
+    win_private_assemblies=False,
+    cipher=block_cipher,
+    noarchive=False,
+ECHO está desativado.
+
+pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+
+exe = EXE(
+    pyz,
+    a.scripts,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    [],
+    name='SistemaSalariosGarcons',
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=True,
+    console=False,
+    disable_windowed_traceback=False,
+    argv_emulation=False,
+    target_arch=None,
+    codesign_identity=None,
+    entitlements_file=None,
+    icon=None,
+)
+[4/4] Compilando executavel...
+       Isto pode levar alguns minutos...
+
+409 INFO: PyInstaller: 6.19.0, contrib hooks: 2026.1
+409 INFO: Python: 3.11.0
+436 INFO: Platform: Windows-10-10.0.26200-SP0
+436 INFO: Python environment: C:\Python311
+441 INFO: Removing temporary files and cleaning cache in C:\Users\Restaurante\AppData\Local\pyinstaller
+ERROR: Spec file "app_windows.spec" not found!
+
+[ERRO] Build falhou. Verifique os erros acima.
+Pressione qualquer tecla para continuar. . .
