@@ -13,8 +13,8 @@ import {
   DataCadastramento
 } from '../types';
 
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || 'https://seu-projeto.supabase.co';
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'sua-chave-anon';
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || 'https://zqvqmqpdgsiyvlsewyyq.supabase.co';
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxdnFtcXBkZ3NpeXZsc2V3eXlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2OTU1NDksImV4cCI6MjA5MzI3MTU0OX0.E_o_fI5rGzuU5Te4aJez--0vrB5_CWiGgoxn2dhqnbs';
 
 class AsyncStorageAdapter {
   async getItem(key: string): Promise<string | null> {

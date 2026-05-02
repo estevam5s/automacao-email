@@ -1,0 +1,35 @@
+# Crontab para Automação Email — Pedacinho do Céu
+# Instalar: crontab -e  (e colar as linhas abaixo)
+# Verificar: crontab -l
+
+CRON_DIR=/caminho/para/automacao-email/cron
+
+# 1. A cada 6 horas — heartbeat
+0 */6 * * *     bash $CRON_DIR/cron_6h_heartbeat.sh >> $CRON_DIR/logs/cron1.log 2>&1
+
+# 2. Todo dia às 02h — limpeza
+0 2 * * *       bash $CRON_DIR/cron_daily_cleanup.sh >> $CRON_DIR/logs/cron2.log 2>&1
+
+# 3. A cada 10 minutos — status
+*/10 * * * *    bash $CRON_DIR/cron_10min_status.sh >> $CRON_DIR/logs/cron3.log 2>&1
+
+# 4. A cada hora — sincronização
+0 * * * *       bash $CRON_DIR/cron_hourly_sync.sh >> $CRON_DIR/logs/cron4.log 2>&1
+
+# 5. Segunda às 03h — relatório semanal
+0 3 * * 1       bash $CRON_DIR/cron_weekly_report.sh >> $CRON_DIR/logs/cron5.log 2>&1
+
+# 6. Dia 1 de cada mês — fechamento mensal
+0 0 1 * *       bash $CRON_DIR/cron_monthly_close.sh >> $CRON_DIR/logs/cron6.log 2>&1
+
+# 7. Todo dia às 01h — purga de dados antigos
+0 1 * * *       bash $CRON_DIR/cron_daily_purge.sh >> $CRON_DIR/logs/cron7.log 2>&1
+
+# 8. Todo dia às 04h — backup
+0 4 * * *       bash $CRON_DIR/cron_daily_backup.sh >> $CRON_DIR/logs/cron8.log 2>&1
+
+# 9. Domingo às 04h — reindexação
+0 4 * * 0       bash $CRON_DIR/cron_weekly_reindex.sh >> $CRON_DIR/logs/cron9.log 2>&1
+
+# 10. 09h, 15h e 21h — batch process
+0 9,15,21 * * * bash $CRON_DIR/cron_batch_process.sh >> $CRON_DIR/logs/cron10.log 2>&1

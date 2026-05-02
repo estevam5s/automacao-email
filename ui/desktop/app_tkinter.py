@@ -474,7 +474,7 @@ class AppTkinter:
         
         self._create_label(email_frame, "E-mail do Destinatário:", fg='#a0a0a0').grid(row=0, column=0, sticky=tk.W, pady=10)
         self.entry_email = self._create_entry(email_frame, width=40)
-        self.entry_email.insert(0, "estevams186@gmail.com")
+        self.entry_email.insert(0, "rebecaluize@gmail.com")
         self.entry_email.grid(row=0, column=1, padx=15, pady=10, sticky=tk.EW)
         
         self._create_button(email_frame, "📧 Enviar E-mail", self.enviar_email, 

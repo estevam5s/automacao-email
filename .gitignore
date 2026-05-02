@@ -26,6 +26,9 @@ ENV/
 env/
 .venv
 
+# Exceptions — webapp source lib must be committed
+!ui/webapp/src/lib/
+
 # IDEs
 .vscode/
 .idea/
